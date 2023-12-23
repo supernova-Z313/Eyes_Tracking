@@ -1,0 +1,6 @@
+Package       Version
+------------- --------
+numpy         1.26.2
+opencv-python 4.8.1.78
+pip           22.0.2
+setuptools    59.6.0
