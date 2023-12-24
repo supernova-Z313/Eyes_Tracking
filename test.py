@@ -44,10 +44,12 @@ def video_detecting(inp_model: int = 0):
 
 # ==============================================================
 if __name__=="__main__":
-	image_paths = ['./media/face1.png', './media/face2.jpeg', './media/face3.jpg', './media/face4_1.jpg', './media/face4_2.jpg', './media/face4_3.jpg', './media/face4_4.jpg', './media/face4_5.jpg', './media/face4.jpg']
+	image_paths = ['./media/face1.png', './media/face2.jpeg', './media/face3.jpg', './media/face4_1.jpg', 
+					'./media/face4_2.jpg', './media/face4_3.jpg', './media/face4_4.jpg', './media/face4_5.jpg', 
+					'./media/face4.jpg', './media/face4_6.jpg', './media/face4_7.jpg']
 	face_cascade = cv2.CascadeClassifier('./data/haarcascade_frontalface_default.xml')
 	eye_cascade = cv2.CascadeClassifier('./data/haarcascade_eye.xml')
-	test_image = cv2.imread(image_paths[6], 0)
+	test_image = cv2.imread(image_paths[10], 0)
 
 	image_detecting(test_image, face_cascade)
 	# video_detecting()
