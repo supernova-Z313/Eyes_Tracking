@@ -26,6 +26,7 @@ def clearify_selection_with_face(face_cord, eyes_cord):
 	# image or so little or so big or under the half of face or not in face deleted
 	face_end_x = face_cord[0][0] + face_cord[0][2]
 	face_end_y = face_cord[0][1] + face_cord[0][3]
+	face_eara = face_cord[0][2] * face_cord[0][3]
 	final = []
 	for i in eyes_cord:
 		eara = i[2]*i[3]
@@ -42,7 +43,15 @@ def clearify_selection_with_face(face_cord, eyes_cord):
 		if face_end_y < end_y:
 			continue
 
-		# ------------------------------------ under the 
+		# ------------------------------------ under the 65%
+		if i[1] > (face_cord[0][1] + (face_cord[0][3]*65/100)):
+			continue
+
+		# ------------------------------------ so big or little
+		if not(2.335 <= (eara*100)/(face_eara) <= 4.111):
+			continue
+
+
 
 		
 
