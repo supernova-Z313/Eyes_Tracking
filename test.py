@@ -24,12 +24,16 @@ def image_detecting(test_image, model):
 	cv2.destroyWindow("Image Detection")
 
 # =============================================================
-def camera_detecting():
-	cap = cv2.VideoCapture(0)
+def video_detecting(inp_model: int = 0):
+	if inp_model:
+		cap = cv2.VideoCapture(inp_model)
+	else:
+		cap = cv2.VideoCapture(0)
+
 	while True:
 		ret, frame = cap.read()
 		frame = detecting(frame, eye_cascade)
-		cv2.imshow('Camera Detection',frame)
+		cv2.imshow('ٰVideo Detection',frame)
 		code = cv2.waitKey(10)
 		if code == ord('q'):
 			break
@@ -40,10 +44,10 @@ def camera_detecting():
 
 # ==============================================================
 if __name__=="__main__":
-	image_paths = ['./media/face1.png', './media/face2.jpeg', './media/face3.jpg']
+	image_paths = ['./media/face1.png', './media/face2.jpeg', './media/face3.jpg', './media/face4_1.jpg', './media/face4_2.jpg', './media/face4_3.jpg', './media/face4_4.jpg', './media/face4_5.jpg', './media/face4.jpg']
 	face_cascade = cv2.CascadeClassifier('./data/haarcascade_frontalface_default.xml')
 	eye_cascade = cv2.CascadeClassifier('./data/haarcascade_eye.xml')
-	test_image = cv2.imread(image_paths[2], 0)
+	test_image = cv2.imread(image_paths[6], 0)
 
 	image_detecting(test_image, face_cascade)
-	# camera_detecting()
+	# video_detecting()
