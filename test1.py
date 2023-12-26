@@ -2,9 +2,9 @@ import cv2
 import numpy as np
 
 # =============================================================
-def draw_rec(img, rec_array, color: (int, int, int)):
+def draw_rec(img, rec_array, color: (int, int, int), thickness=4):
 	for (x,y,w,h) in rec_array:
-		cv2.rectangle(img, (x,y), (x+w,y+h), color, 4) # image, start, end, color, thickness
+		cv2.rectangle(img, (x,y), (x+w,y+h), color, thickness) # image, start, end, color, thickness
 		# break
 
 # =============================================================
@@ -13,13 +13,11 @@ def detecting(img, cascade_type):
 	face_rect = cascade_type.detectMultiScale(face_img, scaleFactor=1.2, minNeighbors=5)
 	return (face_img, face_rect)
 
-
 # =============================================================
 def resizer(name, x, y, flag=cv2.WINDOW_NORMAL):
 	cv2.namedWindow(name, flag)
 	if flag != cv2.WINDOW_AUTOSIZE:
 		cv2.resizeWindow(name, x, y)
-
 
 # =============================================================
 def clearify_selection_with_face(face_cord, eyes_cord):
@@ -37,11 +35,9 @@ def clearify_selection_with_face(face_cord, eyes_cord):
 	for ind, i in enumerate(eyes_cord):
 		if ind >= 2:
 			break
-
 		eara = i[2]*i[3]
 		end_x = i[0] + i[2]
 		end_y = i[1] + i[3]
-
 		# ------------------------------------ not in face
 		if face_cord[0][0] > i[0]:
 			continue
@@ -63,10 +59,62 @@ def clearify_selection_with_face(face_cord, eyes_cord):
 		final.append(i)
 	return final
 
-
 # =============================================================
 def clearify_selection_with_no_face():
 	pass
+
+# =============================================================
+def find_best_contours(temp, temp_threshold):
+	"""
+	 1) in the edge 2) be rectangle 3) little or big
+	"""
+	contours, _ = cv2.findContours(temp_threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+	# contours = sorted(contours, key=lambda x: cv2.contourArea(x), reverse=True)
+	rect = 2.3
+	for ind, cnt in enumerate(contours, start=0):
+		(c_x, x_y, c_w, c_h) = cv2.boundingRect(cnt)
+		# ----------------------- rectangle
+		if (c_w/c_h > rect) or (c_h/c_w > rect):
+			continue
+		# ----------------------- 
+
+		# draw_rec(temp, [[c_x, x_y, c_w, c_h]], (255, 0, 0), 1)
+		# cv2.drawContours(left, [cnt], -1, (0, 0, 255), 2)
+		if ind > 1:
+			break
+
+# =============================================================
+def left_right_selection(eyes):
+	if clean1[0][0] < clean1[1][0]:
+		l = clean1[0]
+		r = clean1[1]
+	else:
+		l = clean1[1]
+		r = clean1[0]
+	return l, r
+
+# =============================================================
+def eyes_frame_seter(frame, lor):
+	temp = frame[lor[1]: lor[1]+lor[3], lor[0]: lor[0]+lor[2]]
+	temp = cv2.cvtColor(temp, cv2.COLOR_BGR2GRAY)
+	temp = cv2.GaussianBlur(temp, (7, 7), 0)
+	_, temp_threshold = cv2.threshold(temp, 45, 255, cv2.THRESH_BINARY_INV)
+	return temp, temp_threshold
+
+# =============================================================
+def set_name_and_position():
+	# 720 * 1280 : ahmad : 360, 640
+	# 1080 * 1920 : rastegar : 540, 960
+	resizer("video", 360, 640)
+	resizer("left", 200, 250) # cv2.WINDOW_AUTOSIZE
+	resizer("right", 200, 250) # cv2.WINDOW_AUTOSIZE
+	resizer("left_threshold", 200, 250)
+	resizer("right_threshold", 200, 250)
+	cv2.moveWindow("video", 900, 10)
+	cv2.moveWindow("left", 150, 100)
+	cv2.moveWindow("right", 400, 100)
+	cv2.moveWindow("left_threshold", 150, 450)
+	cv2.moveWindow("right_threshold", 400, 450)	
 
 # =============================================================
 if __name__=="__main__":
@@ -74,16 +122,8 @@ if __name__=="__main__":
 	eye_cascade = cv2.CascadeClassifier('./data/haarcascade_eye.xml')
 
 	cap = cv2.VideoCapture("./media/ahmad.mp4")
-	# 720 * 1280 : ahmad : 360, 640
-	# 1080 * 1920 : rastegar : 540, 960
-	resizer("video", 360, 640)
-	resizer("left", 300, 320) # cv2.WINDOW_AUTOSIZE
-	resizer("right", 300, 320) # cv2.WINDOW_AUTOSIZE
-	cv2.moveWindow("video", 900, 10)
-	cv2.moveWindow("left", 100, 150)
-	cv2.moveWindow("right", 450, 150)
+	set_name_and_position()
 
-	
 	while True:
 		ret, frame = cap.read()
 		if not(ret):
@@ -97,17 +137,19 @@ if __name__=="__main__":
 
 		if len(face_cord):
 			clean1 = clearify_selection_with_face(face_cord, eyes_cord)
-			draw_rec(frame, clean1, (255, 0, 0))
-		if len(clean1) == 2:
-			if clean1[0][0] < clean1[1][0]:
-				l = clean1[0]
-				r = clean1[1]
-			else:
-				l = clean1[1]
-				r = clean1[0]
+			# draw_rec(frame, clean1, (255, 0, 0), 1)
 
-			left = frame[l[1]: l[1]+l[3], l[0]: l[0]+l[2]]
-			right = frame[r[1]: r[1]+r[3], r[0]: r[0]+r[2]]
+		if len(clean1) == 2:
+			l, r = left_right_selection(clean1)
+
+			left, left_threshold = eyes_frame_seter(frame, l)
+			right, right_threshold = eyes_frame_seter(frame, r)
+			
+			find_best_contours(left, left_threshold)
+			find_best_contours(right, right_threshold)
+
+			cv2.imshow("left_threshold", left_threshold)
+			cv2.imshow("right_threshold", right_threshold)
 			cv2.imshow("left", left)
 			cv2.imshow("right", right)
 
