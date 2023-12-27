@@ -151,6 +151,37 @@ def directions(m_x, m_y, shape, words):
 	return ans
 
 # =============================================================
+def simple_out_direction(last_list):
+	if last_list.count("Top") > 2:
+		print("Direction is: Top")
+	elif last_list.count("Down") > 2:
+		print("Direction is: Down")
+	elif last_list.count("Left") > 2:
+		print("Direction is: Left")
+	elif last_list.count("Right") > 2:
+		print("Direction is: Right")
+	elif last_list.count("Center") > 2:
+		print("Direction is: Center")
+	else:
+		print("Direction is: Direction Not Equal [Default Value Center]")
+
+# =============================================================
+def complex_out_direction(last_list):
+	# check if first one was center and 1, 2 are equal ignore first
+	if (last_list.count("Top") >= 3) or (last_list[1] == last_list[2] == "Top"):
+		print("Direction is: Top")
+	elif (last_list.count("Down") >= 3)  or (last_list[1] == last_list[2] == "Down"):
+		print("Direction is: Down")
+	elif (last_list.count("Left") >= 3) or (last_list[1] == last_list[2] == "Left"):
+		print("Direction is: Left")
+	elif (last_list.count("Right") >= 3) or (last_list[1] == last_list[2] == "Right"):
+		print("Direction is: Right")
+	elif last_list.count("Center") >= 3:
+		print("Direction is: Center")
+	else:
+		print("Direction is: Direction Not Equal [Default Value Center]")
+
+# =============================================================
 def set_name_and_position():
 	# 720 * 1280 : ahmad : 360, 640
 	# 1080 * 1920 : rastegar : 540, 960
@@ -214,22 +245,17 @@ if __name__=="__main__":
 				# shift register 5tayi
 				last_directions.insert(0, last_directions.pop())
 
+				# ---------------------------
 				if l_ans == r_ans:
 					last_directions[0] = l_ans
 					# print("Direction is:", l_ans)
 				else:
-					last_directions[0] = "Center"
+					last_directions[0] = "DNE"
 					# print("Direction is: Center [Direction Not Equal]")
-				if last_directions.count("Top") >= 3:
-					print("Direction is: Top")
-				elif last_directions.count("Down") >= 3:
-					print("Direction is: Down")
-				elif last_directions.count("Left") >= 3:
-					print("Direction is: Left")
-				elif last_directions.count("Right") >= 3:
-					print("Direction is: Right")
-				else:
-					print("Direction is: Center")
+				# ---------------------------
+
+				simple_out_direction(last_directions)
+				# complex_out_direction(last_directions)
 
 				cv2.circle(left, (int(l_m_x), int(l_m_y)), 4, (0, 255, 0), 4)
 				cv2.circle(right, (int(r_m_x), int(r_m_y)), 4, (0, 255, 0), 4)
@@ -240,7 +266,7 @@ if __name__=="__main__":
 			cv2.imshow("right", right)
 
 		cv2.imshow("video", frame)
-		key = cv2.waitKey(30)
+		key = cv2.waitKey(20)
 		if key == ord('q'): # quit
 			break
 		elif key == ord('s'): # stop
