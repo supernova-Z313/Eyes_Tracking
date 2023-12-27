@@ -154,43 +154,57 @@ def directions(m_x, m_y, shape, words):
 def simple_out_direction(last_list):
 	if last_list.count("Top") > 2:
 		print("Direction is: Top")
+		cv2.imshow("Answer", Top_image)
 	elif last_list.count("Down") > 2:
 		print("Direction is: Down")
+		cv2.imshow("Answer", Down_image)
 	elif last_list.count("Left") > 2:
 		print("Direction is: Left")
+		cv2.imshow("Answer", Left_image)
 	elif last_list.count("Right") > 2:
 		print("Direction is: Right")
+		cv2.imshow("Answer", Right_image)
 	elif last_list.count("Center") > 2:
 		print("Direction is: Center")
+		cv2.imshow("Answer", Center_image)
 	else:
 		print("Direction is: Direction Not Equal [Default Value Center]")
+		cv2.imshow("Answer", Unknown_status_image)
 
 # =============================================================
 def complex_out_direction(last_list):
 	# check if first one was center and 1, 2 are equal ignore first
 	if (last_list.count("Top") >= 3) or (last_list[1] == last_list[2] == "Top"):
 		print("Direction is: Top")
+		cv2.imshow("Answer", Top_image)
 	elif (last_list.count("Down") >= 3)  or (last_list[1] == last_list[2] == "Down"):
 		print("Direction is: Down")
+		cv2.imshow("Answer", Down_image)
 	elif (last_list.count("Left") >= 3) or (last_list[1] == last_list[2] == "Left"):
 		print("Direction is: Left")
+		cv2.imshow("Answer", Left_image)
 	elif (last_list.count("Right") >= 3) or (last_list[1] == last_list[2] == "Right"):
 		print("Direction is: Right")
+		cv2.imshow("Answer", Right_image)
 	elif last_list.count("Center") >= 3:
 		print("Direction is: Center")
+		cv2.imshow("Answer", Center_image)
 	else:
 		print("Direction is: Direction Not Equal [Default Value Center]")
+		cv2.imshow("Answer", Unknown_status_image)
 
 # =============================================================
 def set_name_and_position():
 	# 720 * 1280 : ahmad : 360, 640
 	# 1080 * 1920 : rastegar : 540, 960
 	resizer("video", 360, 640)
+	resizer("Answer", 100, 100)
 	resizer("left", 200, 250) # cv2.WINDOW_AUTOSIZE
 	resizer("right", 200, 250) # cv2.WINDOW_AUTOSIZE
 	# resizer("left_threshold", 200, 250)
 	# resizer("right_threshold", 200, 250)
 	cv2.moveWindow("video", 900, 10)
+	cv2.moveWindow("Answer", 450, 450)
 	cv2.moveWindow("left", 150, 100)
 	cv2.moveWindow("right", 400, 100)
 	# cv2.moveWindow("left_threshold", 150, 450)
@@ -202,6 +216,12 @@ if __name__=="__main__":
 	eye_cascade = cv2.CascadeClassifier('./data/haarcascade_eye.xml')
 
 	cap = cv2.VideoCapture("./media/ahmad.mp4")
+	Center_image = cv2.imread("./media/Center.png")
+	Unknown_status_image = cv2.imread("./media/Unknown_status.png")
+	Right_image = cv2.imread("./media/Right.png")
+	Down_image = cv2.imread("./media/Down.png")
+	Left_image = cv2.imread("./media/Left.png")
+	Top_image = cv2.imread("./media/Top.png")
 	set_name_and_position()
 	last_directions = [0, 0, 0, 0, 0]
 
@@ -259,6 +279,8 @@ if __name__=="__main__":
 
 				cv2.circle(left, (int(l_m_x), int(l_m_y)), 4, (0, 255, 0), 4)
 				cv2.circle(right, (int(r_m_x), int(r_m_y)), 4, (0, 255, 0), 4)
+
+				# ans: draw a circle on a white page that move with pointer or only just draw 5 pic
 
 			# cv2.imshow("left_threshold", left_threshold)
 			# cv2.imshow("right_threshold", right_threshold)
