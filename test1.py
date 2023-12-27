@@ -172,6 +172,7 @@ if __name__=="__main__":
 
 	cap = cv2.VideoCapture("./media/ahmad.mp4")
 	set_name_and_position()
+	last_directions = [0, 0, 0, 0, 0]
 
 	while True:
 		ret, frame = cap.read()
@@ -211,8 +212,22 @@ if __name__=="__main__":
 
 				# ---------------------------- check some last direction ...
 				# shift register 5tayi
+				last_directions.insert(0, last_directions.pop())
+
 				if l_ans == r_ans:
-					print("Direction is: ", l_ans)
+					last_directions[0] = l_ans
+					# print("Direction is:", l_ans)
+				else:
+					last_directions[0] = "Center"
+					# print("Direction is: Center [Direction Not Equal]")
+				if last_directions.count("Top") >= 3:
+					print("Direction is: Top")
+				elif last_directions.count("Down") >= 3:
+					print("Direction is: Down")
+				elif last_directions.count("Left") >= 3:
+					print("Direction is: Left")
+				elif last_directions.count("Right") >= 3:
+					print("Direction is: Right")
 				else:
 					print("Direction is: Center")
 
@@ -225,7 +240,7 @@ if __name__=="__main__":
 			cv2.imshow("right", right)
 
 		cv2.imshow("video", frame)
-		key = cv2.waitKey(20)
+		key = cv2.waitKey(30)
 		if key == ord('q'): # quit
 			break
 		elif key == ord('s'): # stop
