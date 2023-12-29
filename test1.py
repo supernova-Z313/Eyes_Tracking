@@ -44,8 +44,8 @@ def clearify_selection_with_face(face_cord, eyes_cord):
 			continue
 		if face_end_y < end_y:
 			continue
-		# ------------------------------------ under the 65%
-		if i[1] > (face_cord[0][1] + (face_cord[0][3]*65/100)):
+		# ------------------------------------ under the 70%
+		if i[1] > (face_cord[0][1] + (face_cord[0][3]*70/100)):
 			continue
 		# ------------------------------------ so big or little
 		if not(2.546 <= (eara*100)/(face_eara) <= 10.458):
@@ -196,8 +196,8 @@ def complex_out_direction(last_list):
 
 # =============================================================
 def set_name_and_position():
-	# 720 * 1280 : ahmad : 360, 640
 	# 1080 * 1920 : rastegar : 540, 960
+	# 720 * 1280 : ahmad : 360, 640
 	resizer("video", 360, 640)
 	resizer("Answer_Left", 150, 150)
 	resizer("Answer_Right", 150, 150)
@@ -231,7 +231,7 @@ if __name__=="__main__":
 
 	while True:
 		ret, frame = cap.read()
-		if not(ret):
+		if not(ret): # end of video
 			break
 
 		frame, face_cord = detecting(frame, face_cascade)
@@ -289,8 +289,8 @@ if __name__=="__main__":
 
 				# ans: draw a circle on a white page that move with pointer or only just draw 5 pic
 
-			cv2.imshow("left_threshold", left_threshold)
-			cv2.imshow("right_threshold", right_threshold)
+			# cv2.imshow("left_threshold", left_threshold)
+			# cv2.imshow("right_threshold", right_threshold)
 			cv2.imshow("left", left)
 			cv2.imshow("right", right)
 
@@ -312,3 +312,4 @@ if __name__=="__main__":
 # 221 : file name
 # 128 : percent of color
 # 134_137 : range of center of eyes
+# 292 : threshold result
