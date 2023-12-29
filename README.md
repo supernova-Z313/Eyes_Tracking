@@ -8,10 +8,11 @@ pip install -r requirements.txt
 
 ```
 
-## Avtivate and Deactivate python venv 
+## Create and Avtivate and Deactivate python venv 
 
 ```bash
 
+python3 -m venv env
 source env/bin/activate
 ~ deactivate
 

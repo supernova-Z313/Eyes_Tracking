@@ -66,8 +66,8 @@ def find_best_contours(temp, temp_threshold):
 	contours, _ = cv2.findContours(temp_threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 	# contours = sorted(contours, key=lambda x: cv2.contourArea(x), reverse=True)
 	rect = 2.1 # 2.3
-	little = 1.5
-	big = 10
+	little = 1.5  # its different for different eyes
+	big = 11.5
 	edge_percent = 22
 	o_edge_percent = 100 - edge_percent
 	f_h, f_w = temp.shape
@@ -125,7 +125,7 @@ def eyes_frame_seter(frame, lor):
 	temp = frame[lor[1]: lor[1]+lor[3], lor[0]: lor[0]+lor[2]]
 	temp = cv2.cvtColor(temp, cv2.COLOR_BGR2GRAY)
 	temp = cv2.GaussianBlur(temp, (7, 7), 0)
-	_, temp_threshold = cv2.threshold(temp, 45, 255, cv2.THRESH_BINARY_INV)
+	_, temp_threshold = cv2.threshold(temp, 45, 255, cv2.THRESH_BINARY_INV) # its important to how many of  eyes can see
 	return temp, temp_threshold
 
 # =============================================================
@@ -170,7 +170,7 @@ def simple_out_direction(last_list, name, screen_name):
 		cv2.imshow(screen_name, Center_image)
 	else:
 		print("Direction is: Direction Not Equal [Default Value Center]")
-		cv2.imshow("Answer", Unknown_status_image)
+		cv2.imshow(screen_name, Unknown_status_image)
 
 # =============================================================
 def complex_out_direction(last_list):
@@ -218,7 +218,7 @@ if __name__=="__main__":
 	face_cascade = cv2.CascadeClassifier('./data/haarcascade_frontalface_default.xml')
 	eye_cascade = cv2.CascadeClassifier('./data/haarcascade_eye.xml')
 
-	cap = cv2.VideoCapture("./media/ver.mp4")
+	cap = cv2.VideoCapture("./media/ahmad.mp4")
 	Center_image = cv2.imread("./media/Center.png")
 	Unknown_status_image = cv2.imread("./media/Unknown_status.png")
 	Right_image = cv2.imread("./media/Right.png")
@@ -259,8 +259,9 @@ if __name__=="__main__":
 				# print(right.shape)
 				# print(r_m_x, r_m_y)
 				l_last_directions.insert(0, l_last_directions.pop())
-				cv2.circle(right, (int(r_m_x), int(r_m_y)), 4, (0, 255, 0), 4)
+				r_last_directions[0] = r_ans
 				simple_out_direction(r_last_directions, "Right Eye", "Answer_Right")
+				cv2.circle(right, (int(r_m_x), int(r_m_y)), 4, (0, 255, 0), 4)
 
 			if len(left_ans): # rastegar contours kame
 				l_m_x, l_m_y = find_center_point(left_ans)
@@ -268,10 +269,10 @@ if __name__=="__main__":
 				# print(left.shape)
 				# print(l_m_x, l_m_y)
 				# print("------------------")
-
 				# ---------------------------- check some last direction ...
 				# shift register 5tayi
 				r_last_directions.insert(0, r_last_directions.pop())
+				l_last_directions[0] = l_ans
 
 				# ---------------------------
 				# if l_ans == r_ans:
@@ -288,8 +289,8 @@ if __name__=="__main__":
 
 				# ans: draw a circle on a white page that move with pointer or only just draw 5 pic
 
-			# cv2.imshow("left_threshold", left_threshold)
-			# cv2.imshow("right_threshold", right_threshold)
+			cv2.imshow("left_threshold", left_threshold)
+			cv2.imshow("right_threshold", right_threshold)
 			cv2.imshow("left", left)
 			cv2.imshow("right", right)
 
@@ -303,3 +304,11 @@ if __name__=="__main__":
 
 
 	cv2.destroyAllWindows()
+
+
+# =========================================
+# important line 
+# 69 : size of countors
+# 221 : file name
+# 128 : percent of color
+# 134_137 : range of center of eyes
