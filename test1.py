@@ -30,7 +30,7 @@ def clearify_selection_with_face(face_cord, eyes_cord):
 	face_eara = face_cord[0][2] * face_cord[0][3]
 	final = []
 	for ind, i in enumerate(eyes_cord):
-		if ind >= 2:
+		if ind >= 3:
 			break
 		eara = i[2]*i[3]
 		end_x = i[0] + i[2]
@@ -45,12 +45,14 @@ def clearify_selection_with_face(face_cord, eyes_cord):
 		if face_end_y < end_y:
 			continue
 		# ------------------------------------ under the 70%
-		if i[1] > (face_cord[0][1] + (face_cord[0][3]*70/100)):
+		if i[1] > (face_cord[0][1] + (face_cord[0][3]*65/100)):
+			# print("h")
 			continue
 		# ------------------------------------ so big or little
 		if not(2.546 <= (eara*100)/(face_eara) <= 10.458):
+			# print("s")
 			continue
-		# ------------------------------------ so big or little
+		# ------------------------------------ 
 		final.append(i)
 	return final
 
@@ -196,8 +198,8 @@ def complex_out_direction(last_list):
 
 # =============================================================
 def set_name_and_position():
-	# 1080 * 1920 : rastegar : 540, 960
-	# 720 * 1280 : ahmad : 360, 640
+	# 1080 * 1920 : me : 540, 960
+	# 720 * 1280 : other : 360, 640
 	resizer("video", 360, 640)
 	resizer("Answer_Left", 150, 150)
 	resizer("Answer_Right", 150, 150)
@@ -263,12 +265,13 @@ if __name__=="__main__":
 				simple_out_direction(r_last_directions, "Right Eye", "Answer_Right")
 				cv2.circle(right, (int(r_m_x), int(r_m_y)), 4, (0, 255, 0), 4)
 
-			if len(left_ans): # rastegar contours kame
+			if len(left_ans):
 				l_m_x, l_m_y = find_center_point(left_ans)
 				l_ans = directions(l_m_x, l_m_y, left.shape[0], "left eye")
 				# print(left.shape)
 				# print(l_m_x, l_m_y)
 				# print("------------------")
+
 				# ---------------------------- check some last direction ...
 				# shift register 5tayi
 				r_last_directions.insert(0, r_last_directions.pop())
@@ -283,7 +286,7 @@ if __name__=="__main__":
 					# print("Direction is: Center [Direction Not Equal]")
 				# ---------------------------
 
-				simple_out_direction(l_last_directions, "Right Eye", "Answer_Left")
+				simple_out_direction(l_last_directions, "Left Eye", "Answer_Left")
 				# complex_out_direction(last_directions)
 				cv2.circle(left, (int(l_m_x), int(l_m_y)), 4, (0, 255, 0), 4)
 
